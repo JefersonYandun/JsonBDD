@@ -1,4 +1,3 @@
-
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -7,26 +6,35 @@ const port = 3000;
 
 app.use(express.json());
 
-const dataFilePath = path.join(__dirname, 'data.json');
+const dataFilePath = path.join(__dirname, 'datos.json'); // Cambiado de 'data.json' a 'datos.json'
 
 // Helper function to read data from JSON file
 const readData = () => {
-    const rawData = fs.readFileSync(dataFilePath);
-    return JSON.parse(rawData);
+    try {
+        const rawData = fs.readFileSync(dataFilePath);
+        return JSON.parse(rawData);
+    } catch (error) {
+        console.error("Error reading data file:", error);
+        return [];
+    }
 };
 
 // Helper function to write data to JSON file
 const writeData = (data) => {
-    fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2));
+    try {
+        fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2));
+    } catch (error) {
+        console.error("Error writing to data file:", error);
+    }
 };
 
 // Handle all methods with app.all
-app.all('/tasks', (req, res) => {
-    let tasks = readData();
+app.all('/persona', (req, res) => {
+    let persona = readData();
 
     switch (req.method) {
         case 'GET':
-            res.json(tasks);
+            res.json(persona);
             break;
 
         case 'POST':
@@ -35,38 +43,38 @@ app.all('/tasks', (req, res) => {
                 return res.status(400).json({ error: 'Description and completed status are required' });
             }
             const newTask = {
-                id: tasks.length ? tasks[tasks.length - 1].id + 1 : 1,
+                id: persona.length ? persona[persona.length - 1].id + 1 : 1,
                 description,
                 completed: completed === 'true'
             };
-            tasks.push(newTask);
-            writeData(tasks);
+            persona.push(newTask);
+            writeData(persona);
             res.status(201).json(newTask);
             break;
 
         case 'PUT':
             const idToUpdate = parseInt(req.query.id, 10);
-            const taskIndex = tasks.findIndex(task => task.id === idToUpdate);
+            const taskIndex = persona.findIndex(task => task.id === idToUpdate);
 
             if (taskIndex === -1) {
                 return res.status(404).json({ error: 'Task not found' });
             }
 
             if (req.query.description !== undefined) {
-                tasks[taskIndex].description = req.query.description;
+                persona[taskIndex].description = req.query.description;
             }
             if (req.query.completed !== undefined) {
-                tasks[taskIndex].completed = req.query.completed === 'true';
+                persona[taskIndex].completed = req.query.completed === 'true';
             }
 
-            writeData(tasks);
-            res.json(tasks[taskIndex]);
+            writeData(persona);
+            res.json(persona[taskIndex]);
             break;
 
         case 'DELETE':
             const idToDelete = parseInt(req.query.id, 10);
-            tasks = tasks.filter(task => task.id !== idToDelete);
-            writeData(tasks);
+            persona = persona.filter(task => task.id !== idToDelete);
+            writeData(persona);
             res.status(204).send();
             break;
 

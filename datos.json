@@ -1,6 +1,33 @@
 [
-    { "id": 1, "Jeferson Yandun": "Programacion", "completed": false },
-    { "id": 2, "Bart Simpson": "Matematica", "completed": true },
-    { "id": 3, "Mr White": "Quimica", "completed": false }
+  {
+    "id": 1,
+    "Jeferson Yandun": "Programacion",
+    "completed": false
+  },
+  {
+    "id": 2,
+    "Bart Simpson": "Matematica",
+    "completed": false,
+    "description": "KUNFU PANDA"
+  },
+  {
+    "id": 3,
+    "Mr White": "Quimica",
+    "completed": false
+  },
+  {
+    "id": 5,
+    "description": "KUNFU PANDA",
+    "completed": false
+  },
+  {
+    "id": 6,
+    "description": "fazzini y Franky",
+    "completed": true
+  },
+  {
+    "id": 7,
+    "description": "Peter Griffin",
+    "completed": false
+  }
 ]
-
