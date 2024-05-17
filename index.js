@@ -1,91 +1,106 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
+const fs = require('fs'); //para manejar archivos
+const path = require('path'); // para trabajar con rutas de archivos y directorios
 const app = express();
 const port = 3000;
 
+// express analice json
 app.use(express.json());
 
-const dataFilePath = path.join(__dirname, 'datos.json'); // Cambiado de 'data.json' a 'datos.json'
+// ruta archivo json
+const dataFilePath = path.join(__dirname, 'datos.json'); 
 
-// Helper function to read data from JSON file
-const readData = () => {
+const leerDatos = () => {
     try {
         const rawData = fs.readFileSync(dataFilePath);
         return JSON.parse(rawData);
     } catch (error) {
-        console.error("Error reading data file:", error);
+        console.error("Error al leer el archivo:", error);
         return [];
     }
 };
 
-// Helper function to write data to JSON file
-const writeData = (data) => {
+const escribirDatos = (data) => {
     try {
         fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2));
     } catch (error) {
-        console.error("Error writing to data file:", error);
+        console.error("Error al escribir datos en el archivo:", error);
     }
 };
 
-// Handle all methods with app.all
 app.all('/persona', (req, res) => {
-    let persona = readData();
+    let personas = leerDatos();
 
     switch (req.method) {
         case 'GET':
-            res.json(persona);
+            res.json(personas);
             break;
 
         case 'POST':
-            const { description, completed } = req.query;
-            if (!description || completed === undefined) {
-                return res.status(400).json({ error: 'Description and completed status are required' });
+            //URL: http://localhost:3000/persona?nombre=Juan&edad=25&materia=Matemáticas&descripcion=Estudiante aplicado
+            
+            // Extrae los parámetros de consulta de la URL
+            const { nombre, edad, materia, descripcion } = req.query;
+            if (!nombre || !edad || !materia || !descripcion) {
+
+                return res.status(400).json({ error: 'Se requiere nombre, edad, materia y descripción' });
             }
-            const newTask = {
-                id: persona.length ? persona[persona.length - 1].id + 1 : 1,
-                description,
-                completed: completed === 'true'
+            const newPersona = {
+                id: personas.length ? personas[personas.length - 1].id + 1 : 1,
+                nombre,
+                edad,
+                materia,
+                descripcion
             };
-            persona.push(newTask);
-            writeData(persona);
-            res.status(201).json(newTask);
+            personas.push(newPersona);
+            escribirDatos(personas);
+            res.status(201).json(newPersona);
             break;
 
         case 'PUT':
+           // URL: http://localhost:3000/persona?id=1&nombre=Juan&edad=26&materia=Física&descripcion=Estudiante avanzado
+
+            // Obtiene el ID de la persona a actualizar desde los parámetros de consulta
             const idToUpdate = parseInt(req.query.id, 10);
-            const taskIndex = persona.findIndex(task => task.id === idToUpdate);
+            // la encuentra en el array uwu
+            const personaIndex = personas.findIndex(persona => persona.id === idToUpdate);
 
-            if (taskIndex === -1) {
-                return res.status(404).json({ error: 'Task not found' });
+            if (personaIndex === -1) {
+                return res.status(404).json({ error: 'Persona no encontrada' });
+            }
+            //actualiza cmapos de las personas de la bdd
+            if (req.query.nombre !== undefined) {
+                personas[personaIndex].nombre = req.query.nombre;
+            }
+            if (req.query.edad !== undefined) {
+                personas[personaIndex].edad = req.query.edad;
+            }
+            if (req.query.materia !== undefined) {
+                personas[personaIndex].materia = req.query.materia;
+            }
+            if (req.query.descripcion !== undefined) {
+                personas[personaIndex].descripcion = req.query.descripcion;
             }
 
-            if (req.query.description !== undefined) {
-                persona[taskIndex].description = req.query.description;
-            }
-            if (req.query.completed !== undefined) {
-                persona[taskIndex].completed = req.query.completed === 'true';
-            }
-
-            writeData(persona);
-            res.json(persona[taskIndex]);
+            escribirDatos(personas);
+            res.json(personas[personaIndex]);
             break;
 
         case 'DELETE':
             const idToDelete = parseInt(req.query.id, 10);
-            persona = persona.filter(task => task.id !== idToDelete);
-            writeData(persona);
+         // Filtra el id 
+            personas = personas.filter(persona => persona.id !== idToDelete);
+            escribirDatos(personas);
             res.status(204).send();
             break;
 
         default:
-            res.status(405).send({ error: 'Method not allowed' });
+            res.status(405).send({ error: 'Método no permitido' });
     }
 });
 
 
-
 // Iniciar el servidor
-app.listen(3000, () => { // Utiliza `app` para iniciar el servidor
+app.listen(3000, () => { 
     console.log("El servidor está ejecutándose en el puerto 3000");
 });

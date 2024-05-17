@@ -2,7 +2,11 @@
   {
     "id": 1,
     "Jeferson Yandun": "Programacion",
-    "completed": false
+    "completed": false,
+    "nombre": "Juan",
+    "edad": "26",
+    "materia": "Física",
+    "descripcion": "Estudiante avanzado\n"
   },
   {
     "id": 2,
@@ -29,5 +33,19 @@
     "id": 7,
     "description": "Peter Griffin",
     "completed": false
+  },
+  {
+    "id": 8,
+    "nombre": "Danni Flow",
+    "edad": "15",
+    "materia": "Nada",
+    "descripcion": "Estudiante 0\n"
+  },
+  {
+    "id": 9,
+    "nombre": "Pancho Emilio",
+    "edad": "36",
+    "materia": "Fisica",
+    "descripcion": "Profesor\n"
   }
 ]
