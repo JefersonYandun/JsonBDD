@@ -1,0 +1,6 @@
+[
+    { "id": 1, "Jeferson Yandun": "Programacion", "completed": false },
+    { "id": 2, "Bart Simpson": "Matematica", "completed": true },
+    { "id": 3, "Mr White": "Quimica", "completed": false }
+]
+
