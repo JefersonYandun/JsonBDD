@@ -12,14 +12,15 @@ const dataFilePath = path.join(__dirname, 'datos.json');
 
 const leerDatos = () => {
     try {
+        //leer y convenritr a obj java
         const rawData = fs.readFileSync(dataFilePath);
-        return JSON.parse(rawData);
+        return JSON.parse(rawData); 
     } catch (error) {
         console.error("Error al leer el archivo:", error);
         return [];
     }
 };
-
+//f escribir x
 const escribirDatos = (data) => {
     try {
         fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2));
@@ -29,7 +30,7 @@ const escribirDatos = (data) => {
 };
 
 app.all('/persona', (req, res) => {
-    let personas = leerDatos();
+    let personas = leerDatos(); 
 
     switch (req.method) {
         case 'GET':
